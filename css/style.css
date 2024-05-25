@@ -47,7 +47,8 @@
   .movies {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    gap: 53px;
+    /* justify-content: space-around; */
   }
   
   .movie {
