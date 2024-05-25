@@ -40,6 +40,10 @@
     color: white;
   }
   
+  .header__content-sections:hover {
+    color: green;
+  }
+
   .movies {
     display: flex;
     flex-wrap: wrap;

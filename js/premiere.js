@@ -1,5 +1,5 @@
 const API_KEY = "59acaf88-ebbc-46c4-a105-fb05630b4971";
-const API_URL_POPULAR = "https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_100_POPULAR_FILMS&page=1";
+const API_URL_POPULAR = "https://kinopoiskapiunofficial.tech/api/v2.2/films/premieres?year=2024&month=JANUARY";
 const API_URL_SEARCH = "https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=";
 
 getMovies(API_URL_POPULAR);
@@ -31,7 +31,7 @@ function showMovies(data) {
   // Очищаем предыдущие фильмы
   moviesEl.innerHTML = "";
 
-  data.films.forEach((movie) => {
+  data.items.forEach((movie) => { // Изменил на data.items для премьеры
     const movieEl = document.createElement("div");
     movieEl.classList.add("movie");
     movieEl.innerHTML = `
@@ -61,7 +61,6 @@ document.querySelector('.movies').addEventListener('click', function(event) {
   if (event.target.closest('.like-button')) {
     const likeButton = event.target.closest('.like-button');
     likeButton.classList.toggle('liked');
-    console.log('asd');
   }
 });
 
