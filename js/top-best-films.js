@@ -2,7 +2,16 @@ const API_KEY = "59acaf88-ebbc-46c4-a105-fb05630b4971";
 const API_URL_POPULAR = "https://kinopoiskapiunofficial.tech/api/v2.2/films/collections?type=TOP_POPULAR_ALL&page=2";
 const API_URL_SEARCH = "https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=";
 
+function setLikedMovies(likedMovies) {
+  localStorage.setItem('likedMovies', JSON.stringify(likedMovies));
+}
+
+function getLikedMovies() {
+  return JSON.parse(localStorage.getItem('likedMovies')) || [];
+}
+
 getMovies(API_URL_POPULAR);
+
 
 async function getMovies(url) {
   const resp = await fetch(url, {
@@ -12,7 +21,7 @@ async function getMovies(url) {
     },
   });
   const respData = await resp.json();
-//   console.log(respData);
+  // console.log(respData);
   showMovies(respData);
 }
 
@@ -31,6 +40,8 @@ function showMovies(data) {
 
   moviesEl.innerHTML = "";
 
+  const likedMovies = getLikedMovies();
+
   (data.films || data.items || data.releases || data.expected || data.best).forEach((movie) => {
     const movieEl = document.createElement("div");
     movieEl.classList.add("movie");
@@ -38,7 +49,7 @@ function showMovies(data) {
       <div class="movie__cover-inner">
         <div class="movie__cover--darkened">
           <img src="${movie.posterUrlPreview}" class="movie__cover" alt="${movie.nameRu}" />
-          <button class="like-button">
+          <button class="like-button ${likedMovies.includes(movie.nameRu) ? 'liked' : ''}">
             <svg viewBox="0 0 24 24" class="heart-icon">
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
@@ -51,6 +62,7 @@ function showMovies(data) {
         ${movie.rating ? `
         <div class="movie__average movie__average--${getClassByRate(movie.rating)}">${movie.rating}</div>
         ` : ''}
+        <div class="movie__title">${movie.year}</div>
       </div>
     `;
     moviesEl.appendChild(movieEl);
@@ -60,7 +72,22 @@ function showMovies(data) {
 document.querySelector('.movies').addEventListener('click', function(event) {
   if (event.target.closest('.like-button')) {
     const likeButton = event.target.closest('.like-button');
-    likeButton.classList.toggle('liked');
+    const movieElement = likeButton.closest('.movie');
+    const movieName = movieElement.querySelector('.movie__title').textContent;
+    let likedMovies = getLikedMovies();
+
+    const isLiked = likedMovies.includes(movieName);
+
+    if (isLiked) {
+      const index = likedMovies.indexOf(movieName);
+      likedMovies.splice(index, 1);
+      likeButton.classList.remove('liked');
+    } else {
+      likedMovies.push(movieName);
+      likeButton.classList.add('liked');
+    }
+
+    setLikedMovies(likedMovies);
   }
 });
 
